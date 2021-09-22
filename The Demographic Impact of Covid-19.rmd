@@ -1,0 +1,78 @@
+---
+title: "The Demographic Impact of Covid-19"
+output: html_notebook
+---
+
+
+```{r}
+covid <- read.csv("E:/sem5/cse3505/Project/The Demographic Impact of Covid-19/data/time-series-19-covid-combined.csv")
+covid
+```
+*Data Cleaning*
+
+*Checking for Na values*
+
+```{r}
+covid_demo <- na.omit(covid)
+sum(is.na(covid$Date))
+```
+
+```{r}
+covid_demo <- na.omit(covid)
+sum(is.na(covid$Country.Region))
+```
+
+
+```{r}
+covid_demo <- na.omit(covid)
+sum(is.na(covid$Confirmed))
+```
+
+
+```{r}
+covid_demo <- na.omit(covid)
+sum(is.na(covid$Recovered))
+```
+
+
+```{r}
+covid_demo <- na.omit(covid)
+sum(is.na(covid$Deaths))
+```
+
+*Importing Libraries for Data Manipulation*
+
+```{r}
+library(dplyr)
+library(tidyverse)
+```
+
+*Replacing all the NA values with 0*
+```{r}
+covid <- covid %>%
+  mutate(Confirmed=replace(Confirmed,is.na(Confirmed),0))
+
+sum(is.na(covid$Confirmed))
+```
+
+
+```{r}
+covid <- covid %>%
+  mutate(Recovered=replace(Recovered,is.na(Recovered),0))
+
+sum(is.na(covid$Recovered))
+```
+
+```{r}
+covid <- covid %>%
+  mutate(Deaths=replace(Deaths,is.na(Deaths),0))
+
+sum(is.na(covid$Deaths))
+```
+
+
+
+
+
+
+
