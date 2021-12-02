@@ -1,0 +1,201 @@
+---
+title: "videogamessaleanalysis"
+author: "Ashish Das"
+date: "10/11/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+```{r}
+library(ggplot2)
+library(dplyr)
+```
+
+```{r}
+df <- read.csv("E:\\sem5\\cse3505\\Project\\vgsales.csv")
+head(df)
+```
+
+```{r}
+df_clean <- na.omit(df)
+
+sum(is.na(df_clean))
+
+sum(is.na(df$Rank))
+sum(is.na(df$Name))
+sum(is.na(df$Platform))
+sum(is.na(df$Year))
+sum(is.na(df$Genre))
+sum(is.na(df$Publisher))
+sum(is.na(df$NA_Sales))
+sum(is.na(df$EU_Sales))
+sum(is.na(df$JP_Sales))
+sum(is.na(df$Other_Sales))
+sum(is.na(df$Global_Sales))
+```
+```{r}
+unique(df$NA_Sales)
+```
+# 1. Which region has performed the best in terms of sales?
+
+### We will utilize the average sales made per region and compare the results. Before we do that, let's make sure we know how to calculate the average. We observe that our output is coming in decimals, to convert the values in millions, let's multiple the result with 10,00,000. The final code should look like this.
+
+```{r}
+x <- mean(df$NA_Sales,na.rm = TRUE)*1000000
+y <- mean(df$EU_Sales,na.rm = TRUE)*1000000
+z <- mean(df$JP_Sales,na.rm = TRUE)*1000000
+q <- mean(df$Other_Sales,na.rm = TRUE)*1000000
+p <- mean(df$Global_Sales,na.rm = TRUE)*1000000
+```
+
+```{r}
+print(paste("The average sales in North America =", x))
+print(paste("The average sales in Europe =", y))
+print(paste("The average sales in Japan =", z))
+print(paste("The average sales in other regions =", q))
+print(paste("The average sales globally =", p))
+```
+
+```{r}
+X <- c(537440.656,264667.430, 146652.006, 77781.660, 48063.020)
+Y <- c('Global','North America', 'Europe', 'Japan', 'Other')
+```
+
+# Let us now plot our findings on a bar chart.
+
+```{r}
+par(mar=c(3, 15, 3, 1))
+barplot(X ~ Y,las=1, ylab = "Regions", horiz = TRUE)
+```
+
+```{r}
+unique(df$Platform)
+```
+#Grouping the Global sales based on each platform
+
+```{r}
+df %>%
+  group_by(Platform) %>%
+    summarize(Global_Sales)
+```
+
+#Grouping the North America sales based on each platform
+```{r}
+df %>%
+  group_by(Platform) %>%
+    summarize(NA_Sales)
+```
+
+#Grouping the Europe sales based on each platform
+
+```{r}
+df %>%
+  group_by(Platform) %>%
+    summarize(EU_Sales)
+```
+
+#Grouping the Japan sales based on each platform
+```{r}
+df %>%
+  group_by(Platform) %>%
+    summarize(JP_Sales)
+```
+
+#Grouping the other countries sales based on each platform
+```{r}
+df %>%
+  group_by(Platform) %>%
+    summarize(Other_Sales)
+```
+
+# 3. What are the top 10 games currently making the most sales globally?
+# We will use a similar approach by grouping the games with respect to the global sales and observe the top 10 games.
+
+```{r}
+df2 = subset(df, select=c(Name,Global_Sales))
+head(df2)
+```
+
+```{r}
+df3<-head(df2,10)
+df3<-df3 %>%
+  group_by(Name)%>%
+  arrange(desc(Global_Sales))
+  
+```
+
+## We see the most played game is Wii Sports making a total of $82.74 million globally.
+
+## We will plot the above using a pie chart.
+
+```{r}
+df3
+```
+```{r}
+ggplot(df3, aes(x="",y=Global_Sales,fill=Name))+geom_bar(width=1,stat='identity')+coord_polar("y",start = 0)
+```
+## The pie chart also shows the proportion of sales each game holds, while also depicting the results.
+
+
+# 4. What are the top games for different regions?
+
+## We will have to compare the sales made by different games regionally. We will use the same approach we did while analyzing the platform.
+```{r}
+df4 = subset(df, select=c(Name,NA_Sales))
+df4<-head(df4,5)
+df4<-df4 %>%
+  group_by(Name)%>%
+  arrange(desc(NA_Sales))
+df4
+```
+
+## Plotting it in a similar fashion to understand the results obtained.
+```{r}
+ggplot(data=df4,mapping=aes(x=Name, fill=NA_Sales))+geom_bar() + ggtitle("Female Left Handers and Male Left Handers")
+```
+
+
+```{r}
+df4 = subset(df, select=c(Name,EU_Sales))
+df4<-head(df4,5)
+df4<-df4 %>%
+  group_by(Name)%>%
+  arrange(desc(EU_Sales))
+df4
+```
+```{r}
+ggplot(data=df4,mapping=aes(x=Name, fill=EU_Sales))+geom_bar() + ggtitle("Female Left Handers and Male Left Handers")
+```
+
+```{r}
+df4 = subset(df, select=c(Name,JP_Sales))
+df4<-head(df4,5)
+df4<-df4 %>%
+  group_by(Name)%>%
+  arrange(desc(JP_Sales))
+df4
+```
+```{r}
+ggplot(data=df4,mapping=aes(x=Name, fill=JP_Sales))+geom_bar() + ggtitle("Female Left Handers and Male Left Handers")
+```
+
+```{r}
+df4 = subset(df, select=c(Name,Other_Sales))
+df4<-head(df4,5)
+df4<-df4 %>%
+  group_by(Name)%>%
+  arrange(desc(Other_Sales))
+df4
+```
+```{r}
+ggplot(data=df4,mapping=aes(x=Name, fill=Other_Sales))+geom_bar() + ggtitle("Female Left Handers and Male Left Handers")
+```
+
+## The graph shows us the top games preferred by users in different regions and also globally. We observe the following:
+
+## Wii Sports has been the top game in North America, Europe, other regions.
+## Pokemon Red/Pokemon Blue is the top game in Japan.
